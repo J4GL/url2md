@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL to Markdown Converter</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3a56d4;
+            --secondary-color: #4cc9f0;
+            --accent-color: #f72585;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+            --text-color: #343a40;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+            --success-color: #38b000;
+            --error-color: #e63946;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-bg);
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--light-text);
+            max-width: 600px;
+            margin: 1.5rem auto;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+
+        .url-input {
+            padding: 1rem 1.2rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .submit-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            flex: 1;
+            min-width: 140px;
+            font-family: inherit;
+        }
+
+        .submit-btn i {
+            margin-right: 8px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background-color: #e9ecef;
+            color: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.7;
+            box-shadow: none;
+            border: 1px solid #dee2e6;
+            position: relative;
+        }
+        
+        .submit-btn:disabled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='9' stroke='%23adb5bd' stroke-width='2'/%3E%3Cpath d='M5 5L15 15' stroke='%23adb5bd' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 95% center;
+            background-size: 16px 16px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        #copyBtn {
+            background-color: var(--secondary-color);
+        }
+
+        #copyBtn:hover:not(:disabled) {
+            background-color: #3ab7dc;
+        }
+        
+        #copyBtn:disabled {
+            background-color: #d1ecf1;
+            color: #8bb5bd;
+        }
+
+        #downloadZipBtn {
+            background-color: var(--accent-color);
+        }
+
+        #downloadZipBtn:hover:not(:disabled) {
+            background-color: #e02072;
+        }
+        
+        #downloadZipBtn:disabled {
+            background-color: #f8d7da;
+            color: #c98b93;
+        }
+
+        .output-section {
+            display: none;
+            flex-direction: column;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            background-color: white;
+            margin-top: 1.5rem;
+        }
+
+        .section-title {
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: var(--dark-bg);
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .output-content {
+            display: flex;
+            height: 450px;
+        }
+        
+        .output-column {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            width: 50%;
+            min-width: 0; /* Prevents flex items from overflowing */
+        }
+
+        .markdown-output, .rendered-output {
+            flex: 1;
+            padding: 1.5rem;
+            overflow: auto;
+            height: 100%;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .markdown-output {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            white-space: pre-wrap;
+            border-right: 1px solid var(--border-color);
+            background-color: #f8f9fa;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .rendered-output {
+            padding: 1.5rem 2rem;
+        }
+
+        .rendered-output h1, .rendered-output h2, .rendered-output h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-bg);
+        }
+
+        .rendered-output a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .rendered-output a:hover {
+            text-decoration: underline;
+        }
+
+        .rendered-output img {
+            max-width: 100%;
+            border-radius: 4px;
+        }
+
+        .rendered-output pre {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .status {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .error {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--error-color);
+        }
+
+        .success {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--light-text);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .output-content {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .markdown-output {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                max-height: 300px;
+            }
+
+            .rendered-output {
+                max-height: 300px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>URL to Markdown Converter</h1>
+            <p class="subtitle">Transform any web page into clean, portable markdown with a single click. Perfect for documentation, note-taking, and content repurposing.</p>
+        </header>
+        
+        <div class="card">
+        
+        <div class="input-section">
+            <input type="url" id="urlInput" class="url-input" placeholder="Enter website URL (e.g., https://example.com)" required>
+            <div class="button-group">
+                <button id="submitBtn" class="submit-btn"><i class="fas fa-sync-alt"></i>Convert to Markdown</button>
+                <button id="copyBtn" class="submit-btn" disabled><i class="fas fa-copy"></i>Copy Markdown</button>
+                <button id="downloadZipBtn" class="submit-btn" disabled><i class="fas fa-download"></i>Download as ZIP</button>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Converting your web page to markdown...</p>
+        </div>
+        
+        <div id="status" class="status"></div>
+        </div> <!-- End of card -->
+        
+        <div class="output-section" id="outputSection">
+            <div class="output-content">
+                <div class="output-column">
+                    <div class="section-title"><i class="fas fa-code"></i> Markdown</div>
+                    <div id="markdownOutput" class="markdown-output"></div>
+                </div>
+                <div class="output-column">
+                    <div class="section-title"><i class="fas fa-eye"></i> Preview</div>
+                    <div id="renderedOutput" class="rendered-output"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>URL to Markdown Converter &copy; 2025 | Made with <i class="fas fa-heart" style="color: var(--accent-color);"></i></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('urlInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const status = document.getElementById('status');
+            const outputSection = document.getElementById('outputSection');
+            const markdownOutput = document.getElementById('markdownOutput');
+            const renderedOutput = document.getElementById('renderedOutput');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadZipBtn = document.getElementById('downloadZipBtn');
+            
+            // Initially disable copy and download buttons until we have content
+            copyBtn.disabled = true;
+            downloadZipBtn.disabled = true;
+            
+            submitBtn.addEventListener('click', async function() {
+                // Always disable copy and download before starting scrape
+                copyBtn.disabled = true;
+                downloadZipBtn.disabled = true;
+                const url = urlInput.value.trim();
+                
+                if (!url) {
+                    status.textContent = 'Please enter a valid URL';
+                    status.classList.add('error');
+                    return;
+                }
+                
+                // Reset UI
+                status.textContent = '';
+                status.classList.remove('error');
+                outputSection.style.display = 'none';
+                loading.style.display = 'block';
+                submitBtn.disabled = true;
+                copyBtn.disabled = true;
+                downloadZipBtn.disabled = true;
+                
+                try {
+                    const response = await fetch('/scrape-and-convert', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: url }),
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Enable only after successful markdown fetch
+                        copyBtn.disabled = false;
+                        downloadZipBtn.disabled = false;
+                        // Display the markdown
+                        markdownOutput.textContent = data.markdown;
+                        
+                        // Render the markdown
+                        renderedOutput.innerHTML = marked.parse(data.markdown);
+                        
+                        // Show the output section and enable action buttons
+                        outputSection.style.display = 'flex';
+                        status.textContent = 'Conversion completed successfully!';
+                    } else {
+                        status.textContent = data.error || 'An error occurred while processing your request';
+                        status.classList.add('error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    status.textContent = 'Failed to connect to the server';
+                    status.classList.add('error');
+                } finally {
+                    loading.style.display = 'none';
+                    submitBtn.disabled = false;
+                    // If error, keep buttons disabled
+                    if (status.classList.contains('error')) {
+                        copyBtn.disabled = true;
+                        downloadZipBtn.disabled = true;
+                    }
+                    // Add success class to status if no error
+                    if (!status.classList.contains('error') && status.textContent) {
+                        status.classList.add('success');
+                    }
+                }
+            });
+
+            downloadZipBtn.addEventListener('click', async function() {
+                const markdown = markdownOutput.textContent;
+                const url = urlInput.value.trim();
+                if (!markdown) return;
+                try {
+                    const response = await fetch('/download-markdown-zip', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ markdown: markdown, url: url })
+                    });
+                    if (!response.ok) throw new Error('Failed to download zip');
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    // Try to extract filename from content-disposition
+                    const disposition = response.headers.get('content-disposition');
+                    let filename = 'output.zip';
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        filename = disposition.split('filename=')[1].replace(/['\"]/g, '').trim();
+                    }
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(downloadUrl);
+                        document.body.removeChild(a);
+                    }, 100);
+                } catch (err) {
+                    status.textContent = 'Failed to download ZIP';
+                    status.classList.add('error');
+                }
+            });
+
+            copyBtn.addEventListener('click', function() {
+                const markdown = markdownOutput.textContent;
+                navigator.clipboard.writeText(markdown)
+                    .then(() => {
+                        status.textContent = 'Markdown copied to clipboard!';
+                        status.classList.remove('error');
+                        status.classList.add('success');
+                    })
+                    .catch(() => {
+                        status.textContent = 'Failed to copy markdown';
+                        status.classList.add('error');
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

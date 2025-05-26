@@ -1,0 +1,4 @@
+flask==2.3.3
+undetected-chromedriver>=3.5.0
+html2text==2020.1.16
+selenium>=4.9.0
