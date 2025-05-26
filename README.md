@@ -24,7 +24,7 @@ A web application that converts web pages into clean, readable Markdown format. 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/url2md.git
+   git clone https://github.com/J4GL/url2md.git
    cd url2md
    ```
 
@@ -50,7 +50,7 @@ A web application that converts web pages into clean, readable Markdown format. 
 
 2. Open your web browser and navigate to:
    ```
-   http://localhost:5000
+   http://localhost:5001
    ```
    (The script will automatically find an available port between 5000-5010 if the default is in use)
 
