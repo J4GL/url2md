@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL to Markdown Converter</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- TODO: Replace PLACEHOLDER_HASH values below with actual SRI hashes for each resource.
+         Note: Google Fonts (fonts.googleapis.com) may not work reliably with SRI
+         due to dynamically generated CSS. Test thoroughly if SRI is applied. -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" integrity="sha384-PLACEHOLDER_HASH_GOOGLE_FONTS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-PLACEHOLDER_HASH_FONT_AWESOME" crossorigin="anonymous">
     <style>
         :root {
             --primary-color: #4361ee;
@@ -204,7 +207,7 @@
         }
 
         .output-section {
-            display: none;
+            display: none; /* Initially hidden */
             flex-direction: column;
             border-radius: 12px;
             overflow: hidden;
@@ -312,7 +315,7 @@
         }
 
         .loading {
-            display: none;
+            display: none; /* Initially hidden */
             text-align: center;
             margin: 2rem 0;
             color: var(--light-text);
@@ -340,6 +343,10 @@
             font-size: 0.9rem;
         }
 
+        .footer .fa-heart { /* Moved inline style here */
+            color: var(--accent-color);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1.5rem;
@@ -365,7 +372,8 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- TODO: Replace PLACEHOLDER_HASH_MARKEDJS with actual SRI hash -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" integrity="sha384-PLACEHOLDER_HASH_MARKEDJS" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
@@ -374,40 +382,41 @@
             <p class="subtitle">Transform any web page into clean, portable markdown with a single click. Perfect for documentation, note-taking, and content repurposing.</p>
         </header>
         
-        <div class="card">
-        
-        <div class="input-section">
-            <input type="url" id="urlInput" class="url-input" placeholder="Enter website URL (e.g., https://example.com)" required>
-            <div class="button-group">
-                <button id="submitBtn" class="submit-btn"><i class="fas fa-sync-alt"></i>Convert to Markdown</button>
-                <button id="copyBtn" class="submit-btn" disabled><i class="fas fa-copy"></i>Copy Markdown</button>
-                <button id="downloadZipBtn" class="submit-btn" disabled><i class="fas fa-download"></i>Download as ZIP</button>
-            </div>
-        </div>
-        
-        <div id="loading" class="loading">
-            <div class="loading-spinner"></div>
-            <p>Converting your web page to markdown...</p>
-        </div>
-        
-        <div id="status" class="status"></div>
-        </div> <!-- End of card -->
-        
-        <div class="output-section" id="outputSection">
-            <div class="output-content">
-                <div class="output-column">
-                    <div class="section-title"><i class="fas fa-code"></i> Markdown</div>
-                    <div id="markdownOutput" class="markdown-output"></div>
+        <main>
+            <div class="card">
+                <div class="input-section">
+                    <input type="url" id="urlInput" class="url-input" placeholder="Enter website URL (e.g., https://example.com)" required>
+                    <div class="button-group">
+                        <button id="submitBtn" class="submit-btn"><i class="fas fa-sync-alt"></i>Convert to Markdown</button>
+                        <button id="copyBtn" class="submit-btn" disabled><i class="fas fa-copy"></i>Copy Markdown</button>
+                        <button id="downloadZipBtn" class="submit-btn" disabled><i class="fas fa-download"></i>Download as ZIP</button>
+                    </div>
                 </div>
-                <div class="output-column">
-                    <div class="section-title"><i class="fas fa-eye"></i> Preview</div>
-                    <div id="renderedOutput" class="rendered-output"></div>
+
+                <div id="loading" class="loading" role="status">
+                    <div class="loading-spinner"></div>
+                    <p>Converting your web page to markdown...</p>
+                </div>
+
+                <div id="status" class="status" aria-live="polite"></div>
+            </div> <!-- End of card -->
+
+            <div class="output-section" id="outputSection">
+                <div class="output-content">
+                    <div class="output-column">
+                        <div class="section-title"><i class="fas fa-code"></i> Markdown</div>
+                        <div id="markdownOutput" class="markdown-output"></div>
+                    </div>
+                    <div class="output-column">
+                        <div class="section-title"><i class="fas fa-eye"></i> Preview</div>
+                        <div id="renderedOutput" class="rendered-output"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
         
         <footer class="footer">
-            <p>URL to Markdown Converter &copy; 2025 | Made with <i class="fas fa-heart" style="color: var(--accent-color);"></i></p>
+            <p>URL to Markdown Converter &copy; 2025 | Made with <i class="fas fa-heart"></i></p>
         </footer>
     </div>
 
@@ -423,30 +432,27 @@
             const copyBtn = document.getElementById('copyBtn');
             const downloadZipBtn = document.getElementById('downloadZipBtn');
             
-            // Initially disable copy and download buttons until we have content
             copyBtn.disabled = true;
             downloadZipBtn.disabled = true;
             
             submitBtn.addEventListener('click', async function() {
-                // Always disable copy and download before starting scrape
                 copyBtn.disabled = true;
                 downloadZipBtn.disabled = true;
                 const url = urlInput.value.trim();
                 
                 if (!url) {
                     status.textContent = 'Please enter a valid URL';
+                    status.classList.remove('success'); // Ensure success is removed on new error
                     status.classList.add('error');
+                    outputSection.style.display = 'none'; // Hide output on new submission with error
                     return;
                 }
                 
-                // Reset UI
                 status.textContent = '';
-                status.classList.remove('error');
+                status.classList.remove('error', 'success');
                 outputSection.style.display = 'none';
                 loading.style.display = 'block';
                 submitBtn.disabled = true;
-                copyBtn.disabled = true;
-                downloadZipBtn.disabled = true;
                 
                 try {
                     const response = await fetch('/scrape-and-convert', {
@@ -460,36 +466,33 @@
                     const data = await response.json();
                     
                     if (response.ok) {
-                        // Enable only after successful markdown fetch
-                        copyBtn.disabled = false;
-                        downloadZipBtn.disabled = false;
-                        // Display the markdown
                         markdownOutput.textContent = data.markdown;
-                        
-                        // Render the markdown
                         renderedOutput.innerHTML = marked.parse(data.markdown);
                         
-                        // Show the output section and enable action buttons
-                        outputSection.style.display = 'flex';
+                        outputSection.style.display = 'flex'; // Display as flex to show columns
                         status.textContent = 'Conversion completed successfully!';
+                        status.classList.add('success');
+                        copyBtn.disabled = false;
+                        downloadZipBtn.disabled = false;
                     } else {
-                        status.textContent = data.error || 'An error occurred while processing your request';
+                        status.textContent = data.error || 'An error occurred while processing your request.';
                         status.classList.add('error');
+                        copyBtn.disabled = true; // Keep disabled on error
+                        downloadZipBtn.disabled = true; // Keep disabled on error
                     }
                 } catch (error) {
-                    console.error('Error:', error);
-                    status.textContent = 'Failed to connect to the server';
+                    console.error('Fetch Error:', error);
+                    status.textContent = 'Failed to connect to the server. Please check your network connection.';
                     status.classList.add('error');
+                    copyBtn.disabled = true; // Keep disabled on error
+                    downloadZipBtn.disabled = true; // Keep disabled on error
                 } finally {
                     loading.style.display = 'none';
                     submitBtn.disabled = false;
-                    // If error, keep buttons disabled
+                    // Ensure status classes are correctly managed based on final outcome
                     if (status.classList.contains('error')) {
-                        copyBtn.disabled = true;
-                        downloadZipBtn.disabled = true;
-                    }
-                    // Add success class to status if no error
-                    if (!status.classList.contains('error') && status.textContent) {
+                        status.classList.remove('success');
+                    } else if (status.textContent) { // If there's text and no error, it's a success
                         status.classList.add('success');
                     }
                 }
@@ -497,48 +500,75 @@
 
             downloadZipBtn.addEventListener('click', async function() {
                 const markdown = markdownOutput.textContent;
-                const url = urlInput.value.trim();
-                if (!markdown) return;
+                const url = urlInput.value.trim(); // Get current URL for filename context
+                if (!markdown) {
+                    status.textContent = 'No markdown content to download.';
+                    status.classList.remove('success');
+                    status.classList.add('error');
+                    return;
+                }
+                status.classList.remove('error', 'success'); // Clear previous status
+
                 try {
                     const response = await fetch('/download-markdown-zip', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ markdown: markdown, url: url })
                     });
-                    if (!response.ok) throw new Error('Failed to download zip');
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to download ZIP from server.');
+                    }
+
                     const blob = await response.blob();
                     const downloadUrl = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
+                    a.style.display = 'none'; // Hide the link
                     a.href = downloadUrl;
-                    // Try to extract filename from content-disposition
+
                     const disposition = response.headers.get('content-disposition');
-                    let filename = 'output.zip';
+                    let filename = 'output.zip'; // Default filename
                     if (disposition && disposition.indexOf('filename=') !== -1) {
                         filename = disposition.split('filename=')[1].replace(/['\"]/g, '').trim();
                     }
                     a.download = filename;
+
                     document.body.appendChild(a);
                     a.click();
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(downloadUrl);
-                        document.body.removeChild(a);
-                    }, 100);
+
+                    window.URL.revokeObjectURL(downloadUrl);
+                    document.body.removeChild(a);
+
+                    status.textContent = 'ZIP file downloaded successfully!';
+                    status.classList.add('success');
+
                 } catch (err) {
-                    status.textContent = 'Failed to download ZIP';
+                    console.error('Download ZIP Error:', err);
+                    status.textContent = err.message || 'Failed to download ZIP. Please try again.';
                     status.classList.add('error');
                 }
             });
 
             copyBtn.addEventListener('click', function() {
                 const markdown = markdownOutput.textContent;
+                if (!markdown) {
+                    status.textContent = 'No markdown content to copy.';
+                    status.classList.remove('success');
+                    status.classList.add('error');
+                    return;
+                }
+
                 navigator.clipboard.writeText(markdown)
                     .then(() => {
                         status.textContent = 'Markdown copied to clipboard!';
                         status.classList.remove('error');
                         status.classList.add('success');
                     })
-                    .catch(() => {
-                        status.textContent = 'Failed to copy markdown';
+                    .catch((err) => {
+                        console.error('Copy Markdown Error:', err);
+                        status.textContent = 'Failed to copy markdown. Your browser might not support this feature or permission was denied.';
+                        status.classList.remove('success');
                         status.classList.add('error');
                     });
             });
