@@ -52,6 +52,7 @@ def get_undetected_chrome_driver():
 
     # Try to find Chrome browser in common locations
     chrome_paths = [
+        "/usr/bin/google-chrome",  # Added this path
         "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
         "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
         "/Applications/Chromium.app/Contents/MacOS/Chromium"
