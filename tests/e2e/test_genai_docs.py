@@ -2,7 +2,7 @@ import re
 from playwright.sync_api import Page, expect
 
 # Define the target URL for the local application
-LOCAL_APP_URL = "http://localhost:5002/"
+LOCAL_APP_URL = "http://localhost:5000/"
 URL_TO_SCRAPE = "https://googleapis.github.io/python-genai/"
 SUCCESS_MESSAGE = "Conversion completed successfully!"
 

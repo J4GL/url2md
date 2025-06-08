@@ -50,7 +50,7 @@ A web application that converts web pages into clean, readable Markdown format. 
 
 2. Open your web browser and navigate to:
    ```
-   http://localhost:5001
+   http://localhost:5000
    ```
    (The script will automatically find an available port between 5000-5010 if the default is in use)
 
@@ -100,6 +100,43 @@ Content-Type: application/json
 - If you encounter ChromeDriver version issues, try updating Chrome to the latest version
 - Make sure you have enough disk space for Chrome to run in headless mode
 - Check the terminal output for any error messages
+
+## Testing
+
+### Running Tests
+
+This project uses Playwright for end-to-end testing. To run the tests:
+
+1. Make sure the application is running on port 5000
+
+2. Install the test dependencies:
+   ```bash
+   source venv/bin/activate
+   pip install pytest pytest-playwright pytest-html
+   python -m playwright install
+   ```
+
+3. Run the tests:
+   ```bash
+   python -m pytest tests/e2e/test_genai_docs.py -v
+   ```
+
+### Generating HTML Test Reports
+
+To generate HTML reports for your tests:
+
+```bash
+python -m pytest -v --html=test-report.html --self-contained-html
+```
+
+This will create a self-contained HTML report with detailed test results. To view the report, you can:
+
+1. Open it directly in your browser
+2. Or serve it using Python's built-in HTTP server:
+   ```bash
+   python -m http.server 8000
+   ```
+   Then navigate to `http://localhost:8000/test-report.html`
 
 ## License
 
