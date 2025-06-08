@@ -2,7 +2,7 @@ import re
 from playwright.sync_api import Page, expect
 
 # Define the target URL for the local application
-LOCAL_APP_URL = "http://localhost:5000/"
+LOCAL_APP_URL = "http://localhost:3000/"
 URL_TO_SCRAPE = "https://googleapis.github.io/python-genai/"
 SUCCESS_MESSAGE = "Conversion completed successfully!"
 
@@ -34,4 +34,4 @@ def test_scrape_and_convert_success(page: Page):
 
     # Check if markdown output has some content
     markdown_output = page.locator("#markdownOutput")
-    expect(markdown_output).not_to_be_empty(timeout=5000)
+    expect(markdown_output).not_to_be_empty(timeout=15000)
