@@ -1,0 +1,58 @@
+# Go
+go-api/web-to-markdown-converter
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Python
+python-service/__pycache__/
+python-service/*.py[cod]
+python-service/*$py.class
+python-service/*.so
+python-service/.Python
+python-service/build/
+python-service/develop-eggs/
+python-service/dist/
+python-service/downloads/
+python-service/eggs/
+python-service/.eggs/
+python-service/lib/
+python-service/lib64/
+python-service/parts/
+python-service/sdist/
+python-service/var/
+python-service/wheels/
+python-service/share/python-wheels/
+python-service/*.egg-info/
+python-service/.installed.cfg
+python-service/*.egg
+python-service/MANIFEST
+python-service/venv/
+python-service/env/
+python-service/ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+node_modules/
+storage/downloads/md_689f6399d51ba8.83851768.md
